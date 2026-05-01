@@ -5,3 +5,8 @@ chromadb
 openai
 pydantic-settings
 python-dotenv
+google-generativeai
+anthropic
+psycopg2-binary
+mysql-connector-python
+oracledb

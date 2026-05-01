@@ -1,62 +1,76 @@
 # Assistente Virtual Institucional (RAG + MCP)
 
-Este projeto consiste em um Assistente Virtual inteligente projetado para responder perguntas estritamente baseadas na base de conhecimento de uma instituição, utilizando a arquitetura RAG (Retrieval-Augmented Generation) e o protocolo MCP (Model Context Protocol).
+Este projeto é um Assistente Virtual Full-Stack que utiliza RAG (Retrieval-Augmented Generation) e MCP (Model Context Protocol) para fornecer respostas precisas baseadas em bases de dados institucionais (Vetoriais e Relacionais).
 
 ## Arquitetura
 
 1.  **Backend (Python + FastAPI + MCP):**
-    *   **FastAPI:** Provê o endpoint `/api/chat` para comunicação com o frontend.
-    *   **MCP (Model Context Protocol):** Utiliza o `FastMCP` para expor a ferramenta `buscar_informacao_institucional`.
-    *   **ChromaDB:** Banco de dados vetorial em memória que armazena o conhecimento institucional.
-    *   **OpenAI GPT-4o-mini:** LLM responsável por gerar as respostas baseadas no contexto recuperado.
-2.  **Frontend (Vanilla JS + CSS):**
-    *   Widget flutuante moderno e responsivo que pode ser injetado em qualquer página HTML.
+    *   **Provedores de IA:** Suporte para OpenAI, Google Gemini, Anthropic Claude, OpenRouter e Ollama.
+    *   **Bancos de Dados:** Integração com ChromaDB (Vetorial), PostgreSQL, MySQL e Oracle (Relacionais).
+    *   **MCP:** Ferramentas para busca semântica e consultas SQL.
+2.  **Frontend (Vanilla JS):**
+    *   Chat widget flutuante, moderno e injetável.
 
-## Pré-requisitos
+## Configuração do Ambiente
 
-*   Python 3.10 ou superior
-*   Chave de API da OpenAI
+### Variáveis de Ambiente (.env)
 
-## Instalação e Execução
+Crie um arquivo `.env` na pasta `backend/` com as seguintes opções:
 
-### 1. Configurar o Backend
+```env
+# Configuração de IA
+AI_PROVIDER=openai # openai, gemini, anthropic, openrouter, ollama
+AI_API_KEY=sua_chave_aqui
+AI_MODEL=gpt-4o-mini # ou modelo correspondente do provedor
+AI_BASE_URL=http://localhost:11434 # Apenas para Ollama
 
-Navegue até a pasta do backend:
-```bash
-cd backend
+# Configuração de Banco de Dados (Opcional)
+DB_TYPE=mock # postgres, mysql, oracle, mock
+DATABASE_URL=postgres://user:pass@localhost:5432/dbname # Para Postgres
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=senha
+DB_NAME=instituicao
+DB_DSN=localhost/xe # Para Oracle
 ```
 
-Instale as dependências:
-```bash
-pip install -r requirements.txt
+## Tutorial Passo-a-Passo
+
+### 1. Instalação Local
+
+1.  Navegue até o backend: `cd backend`
+2.  Instale as dependências: `pip install -r requirements.txt`
+3.  Inicie o servidor: `python server.py`
+
+### 2. Deploy com Docker
+
+Crie um `Dockerfile` na raiz:
+
+```dockerfile
+FROM python:3.10-slim
+WORKDIR /app
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY backend/ .
+EXPOSE 8000
+CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-Configure sua chave de API:
-Crie um arquivo `.env` na pasta `backend/` ou exporte a variável:
+Build e Run:
 ```bash
-export OPENAI_API_KEY='sua-chave-aqui'
+docker build -t assistant-backend .
+docker run -p 8000:8000 --env-file backend/.env assistant-backend
 ```
 
-Inicie o servidor:
-```bash
-python server.py
-```
-O servidor estará rodando em `http://localhost:8000`.
+## Demonstração de Funcionamento
 
-### 2. Executar o Frontend
+1.  **Início:** O usuário abre o chat no site.
+2.  **Pergunta:** O usuário pergunta "Qual o horário da biblioteca?".
+3.  **Recuperação (RAG):**
+    *   O backend usa a ferramenta MCP `buscar_informacao_institucional` para pesquisar no ChromaDB.
+    *   O contexto encontrado é injetado no prompt.
+4.  **Geração:** O provedor de IA escolhido (ex: Gemini) gera a resposta baseada estritamente no contexto.
+5.  **Resposta:** O usuário recebe a resposta formatada no chat widget.
 
-Basta abrir o arquivo `frontend/index.html` em qualquer navegador moderno.
-
-## Como funciona o RAG
-
-Quando você faz uma pergunta no chat:
-1.  O backend recebe a pergunta.
-2.  A ferramenta **MCP** faz uma busca semântica no **ChromaDB**.
-3.  O contexto recuperado é injetado em um **Prompt de Sistema rígido**.
-4.  O LLM gera a resposta. Se a informação não estiver no contexto, ele responde: *"Desculpe, não tenho essa informação na minha base de dados."*
-
-## Testes sugeridos
-
-*   **Pergunta válida:** "Quais cursos vocês oferecem?"
-*   **Pergunta sobre localização:** "Onde fica o campus?"
-*   **Pergunta fora da base:** "Qual o resultado do jogo de futebol de ontem?" (Deve retornar a mensagem de erro padrão).
+---
+**Nota:** O sistema é estritamente restrito. Se a informação não for encontrada nas bases configuradas, o assistente recusará a resposta para evitar alucinações.
