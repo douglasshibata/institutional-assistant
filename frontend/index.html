@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instituição de Tecnologia Avançada</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+            text-align: center;
+        }
+        .content {
+            max-width: 600px;
+            padding: 20px;
+        }
+        h1 { color: #0046ad; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <h1>Bem-vindo à nossa Instituição</h1>
+        <p>Explore nossos cursos, conheça nossa história e tire suas dúvidas com nosso assistente inteligente no canto inferior direito.</p>
+    </div>
+
+    <!-- Widget do Chat -->
+    <div id="chat-widget-container">
+        <!-- Janela do Chat -->
+        <div id="chat-widget-window">
+            <div id="chat-widget-header">
+                <span>Assistente Institucional</span>
+                <div id="chat-widget-close">&times;</div>
+            </div>
+            <div id="chat-widget-messages">
+                <!-- Mensagens aparecerão aqui -->
+            </div>
+            <div class="typing" style="padding: 0 15px;">O assistente está digitando...</div>
+            <div id="chat-widget-input-area">
+                <input type="text" id="chat-widget-input" placeholder="Digite sua pergunta...">
+                <button id="chat-widget-send">
+                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Botão Lançador -->
+        <div id="chat-widget-launcher">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path>
+            </svg>
+        </div>
+    </div>
+
+    <script src="widget.js"></script>
+</body>
+</html>
