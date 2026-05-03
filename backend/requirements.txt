@@ -10,3 +10,9 @@ anthropic
 psycopg2-binary
 mysql-connector-python
 oracledb
+langchain
+langchain-openai
+langchain-google-genai
+langchain-anthropic
+langchain-chroma
+langchain-community

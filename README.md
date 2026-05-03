@@ -1,50 +1,64 @@
-# Assistente Virtual Institucional (RAG + MCP)
+# Assistente Virtual Institucional (LangChain + RAG + MCP)
 
-Este projeto é um Assistente Virtual Full-Stack que utiliza RAG (Retrieval-Augmented Generation) e MCP (Model Context Protocol) para fornecer respostas precisas baseadas em bases de dados institucionais (Vetoriais e Relacionais).
+Este projeto é um Assistente Virtual de última geração que utiliza a biblioteca **LangChain** para orquestrar fluxos de RAG (Retrieval-Augmented Generation) e o protocolo **MCP** (Model Context Protocol) para integração de ferramentas.
 
-## Arquitetura
+## Principais Tecnologias
 
-1.  **Backend (Python + FastAPI + MCP):**
-    *   **Provedores de IA:** Suporte para OpenAI, Google Gemini, Anthropic Claude, OpenRouter e Ollama.
-    *   **Bancos de Dados:** Integração com ChromaDB (Vetorial), PostgreSQL, MySQL e Oracle (Relacionais).
-    *   **MCP:** Ferramentas para busca semântica e consultas SQL.
-2.  **Frontend (Vanilla JS):**
-    *   Chat widget flutuante, moderno e injetável.
+*   **LangChain:** Orquestração de LLMs, Prompts e Chains.
+*   **FastAPI:** Interface de API robusta para o frontend.
+*   **ChromaDB:** Banco de dados vetorial para busca semântica.
+*   **MCP (Model Context Protocol):** Expansão de capacidades através de ferramentas de busca e SQL.
+*   **Multi-Provider:** Suporte nativo para OpenAI, Google Gemini, Anthropic, OpenRouter e Ollama.
+*   **Multi-Database:** Conectividade com PostgreSQL, MySQL e Oracle.
 
 ## Configuração do Ambiente
 
 ### Variáveis de Ambiente (.env)
 
-Crie um arquivo `.env` na pasta `backend/` com as seguintes opções:
+Crie um arquivo `.env` na pasta `backend/` com:
 
 ```env
-# Configuração de IA
-AI_PROVIDER=openai # openai, gemini, anthropic, openrouter, ollama
+# Configurações de IA
+AI_PROVIDER=openai # openai, gemini, anthropic, ollama, openrouter
 AI_API_KEY=sua_chave_aqui
-AI_MODEL=gpt-4o-mini # ou modelo correspondente do provedor
-AI_BASE_URL=http://localhost:11434 # Apenas para Ollama
+AI_MODEL=gpt-4o-mini
+AI_BASE_URL=http://localhost:11434/v1 # Opcional para Ollama/OpenRouter
 
-# Configuração de Banco de Dados (Opcional)
+# Configurações de Banco de Dados
 DB_TYPE=mock # postgres, mysql, oracle, mock
-DATABASE_URL=postgres://user:pass@localhost:5432/dbname # Para Postgres
-DB_HOST=localhost
+DATABASE_URL=postgresql://user:pass@localhost/dbname
 DB_USER=root
 DB_PASS=senha
+DB_HOST=localhost
 DB_NAME=instituicao
-DB_DSN=localhost/xe # Para Oracle
+DB_DSN=localhost/xe
 ```
 
-## Tutorial Passo-a-Passo
+## Tutorial de Instalação
 
-### 1. Instalação Local
+1.  **Instalar Dependências:**
+    ```bash
+    cd backend
+    pip install -r requirements.txt
+    ```
 
-1.  Navegue até o backend: `cd backend`
-2.  Instale as dependências: `pip install -r requirements.txt`
-3.  Inicie o servidor: `python server.py`
+2.  **Iniciar o Servidor:**
+    ```bash
+    python server.py
+    ```
 
-### 2. Deploy com Docker
+3.  **Executar o Frontend:**
+    Abra `frontend/index.html` no seu navegador.
 
-Crie um `Dockerfile` na raiz:
+## Como funciona (Fluxo LangChain)
+
+1.  **Entrada:** O usuário envia uma mensagem através do chat widget.
+2.  **Recuperação:** O sistema utiliza o `vectorstore` do LangChain (Chroma) para encontrar os documentos mais relevantes.
+3.  **Prompt:** Um `ChatPromptTemplate` combina o contexto recuperado, a pergunta do usuário e o `SystemPrompt` rígido.
+4.  **Processamento:** O LangChain invoca o LLM configurado (OpenAI, Gemini, etc) através de uma Chain unificada.
+5.  **Resposta:** O resultado é processado pelo `StrOutputParser` e enviado de volta ao frontend.
+
+## Deploy com Docker
 
 ```dockerfile
 FROM python:3.10-slim
@@ -52,25 +66,8 @@ WORKDIR /app
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ .
-EXPOSE 8000
 CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-Build e Run:
-```bash
-docker build -t assistant-backend .
-docker run -p 8000:8000 --env-file backend/.env assistant-backend
-```
-
-## Demonstração de Funcionamento
-
-1.  **Início:** O usuário abre o chat no site.
-2.  **Pergunta:** O usuário pergunta "Qual o horário da biblioteca?".
-3.  **Recuperação (RAG):**
-    *   O backend usa a ferramenta MCP `buscar_informacao_institucional` para pesquisar no ChromaDB.
-    *   O contexto encontrado é injetado no prompt.
-4.  **Geração:** O provedor de IA escolhido (ex: Gemini) gera a resposta baseada estritamente no contexto.
-5.  **Resposta:** O usuário recebe a resposta formatada no chat widget.
-
----
-**Nota:** O sistema é estritamente restrito. Se a informação não for encontrada nas bases configuradas, o assistente recusará a resposta para evitar alucinações.
+Build: `docker build -t assistant-langchain .`
+Run: `docker run -p 8000:8000 --env-file backend/.env assistant-langchain`
