@@ -4,7 +4,7 @@ mcp[sse]
 chromadb
 openai
 pydantic-settings
-python-dotenv
+python-dotenv>=1.2.2
 google-generativeai
 anthropic
 psycopg2-binary
