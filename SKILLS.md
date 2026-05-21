@@ -18,7 +18,7 @@ Diretrizes para o Claude (IA) ao atuar no RAG Institucional.
    - Suporte a múltiplos namespaces no ChromaDB para diferentes departamentos da instituição.
    - Implementar histórico de conversa persistente (Memory) por sessão de usuário.
 3. **Observabilidade:**
-   - Integrar LangSmith ou LangFuse para monitoramento de traces e custo de tokens.
+   - Integrar LangSmith para monitoramento de traces e custo de tokens.
 
 ## 🤖 Papel do Claude
 
