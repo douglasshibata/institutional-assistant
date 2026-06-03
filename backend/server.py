@@ -104,9 +104,19 @@ def get_llm():
         return ChatGoogleGenerativeAI(model=os.getenv("AI_MODEL", "gemini-1.5-flash"), google_api_key=AI_API_KEY, temperature=0)
     elif AI_PROVIDER == "anthropic":
         return ChatAnthropic(model=os.getenv("AI_MODEL", "claude-3-5-sonnet-20240620"), api_key=AI_API_KEY, temperature=0)
-    elif AI_PROVIDER == "ollama" or AI_PROVIDER == "openrouter":
-        base_url = os.getenv("AI_BASE_URL", "http://localhost:11434/v1" if AI_PROVIDER == "ollama" else "https://openrouter.ai/api/v1")
-        return ChatOpenAI(model=os.getenv("AI_MODEL", "llama3"), api_key=AI_API_KEY, base_url=base_url, temperature=0)
+    elif AI_PROVIDER == "ollama" or AI_PROVIDER == "openrouter" or AI_PROVIDER == "nvidia":
+        default_base_url = "http://localhost:11434/v1"
+        if AI_PROVIDER == "openrouter":
+            default_base_url = "https://openrouter.ai/api/v1"
+        elif AI_PROVIDER == "nvidia":
+            default_base_url = "https://integrate.api.nvidia.com/v1"
+
+        base_url = os.getenv("AI_BASE_URL", default_base_url)
+        default_model = "llama3"
+        if AI_PROVIDER == "nvidia":
+            default_model = "meta/llama-3.1-8b-instruct"
+
+        return ChatOpenAI(model=os.getenv("AI_MODEL", default_model), api_key=AI_API_KEY, base_url=base_url, temperature=0)
     else:
         raise ValueError(f"Provedor {AI_PROVIDER} não suportado.")
 
