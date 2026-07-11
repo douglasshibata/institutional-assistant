@@ -62,3 +62,21 @@ npm start
 
 ## 🚢 Deployment
 Supports deployment on internal servers or private clouds. Ensure the backend has access to the internal document repository for context.
+
+---
+
+## 🛠️ Project Deep Dive & Technical Guide
+
+### 🎯 Main Purpose
+Institutional AI assistant for corporate answering and FAQ automation.
+
+### 🧰 Tecnologias Utilizadas (Tech Stack)
+- **Primary Technologies:** FastAPI, Python 3.12
+- **Deployment Strategy:** Container-ready with standard Docker/Docker Compose integrations where applicable.
+
+### 🚀 Como Implantar e Executar (How to Deploy & Run)
+#### Python Engine / FastAPI
+1. Install dependencies: `pip install -r requirements.txt`.
+2. Run the server/script: `uvicorn main:app --reload` or `python main.py`.
+
+---
