@@ -160,7 +160,14 @@ prompt_template = ChatPromptTemplate.from_messages([
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
     try:
-        # Recuperação
+        # Se a variável USE_WEKNORA_AGENT for true, utiliza o novo agente integrado com o Agent Starter Kit e WeKnora
+        use_weknora = os.getenv("USE_WEKNORA_AGENT", "true").lower() == "true"
+        if use_weknora:
+            from institutional_agent import get_agent_response_async
+            resposta = await get_agent_response_async(request.message)
+            return ChatResponse(response=resposta)
+
+        # Recuperação original (ChromaDB local)
         # Usamos run_in_threadpool para não bloquear o loop de eventos com chamadas síncronas
         from starlette.concurrency import run_in_threadpool
         contexto = await run_in_threadpool(buscar_informacao_institucional, request.message)

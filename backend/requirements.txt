@@ -1,6 +1,6 @@
 fastapi==0.115.8
 uvicorn
-mcp[sse]
+mcp[sse]<2
 chromadb
 openai
 pydantic-settings
@@ -16,3 +16,4 @@ langchain-google-genai
 langchain-anthropic
 langchain-chroma
 langchain-community
+langgraph
