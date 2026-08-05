@@ -16,3 +16,6 @@ langchain-google-genai
 langchain-anthropic
 langchain-chroma
 langchain-community
+langgraph
+pytest
+requests-mock
