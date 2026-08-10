@@ -1,6 +1,6 @@
 fastapi==0.115.8
 uvicorn
-mcp[sse]
+mcp[sse]<2
 chromadb
 openai
 pydantic-settings
